@@ -1,5 +1,6 @@
 package com.app.journeylink
 
+import PagoScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -61,6 +62,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Confirmacion") {
                             ConfirmScreen(navController = navController)
+                        }
+                        composable("Pago") {
+                            PagoScreen(navController = navController)
                         }
                     }
                 }

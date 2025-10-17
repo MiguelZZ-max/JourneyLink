@@ -287,7 +287,11 @@ fun ConfirmScreen(
 
                 // Botón de confirmar/pagar
                 Button(
-                    onClick = onConfirmarPagar,
+                    onClick = {
+                        onConfirmarPagar ()
+                        navController.navigate("Pago")
+
+                              },
                     modifier = Modifier
                         .height(56.dp)
                         .width(150.dp),
