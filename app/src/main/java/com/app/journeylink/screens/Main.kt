@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.screens.CompanionInfoScreen
+import com.app.journeylink.screens.CompanionsScreen
 import com.app.journeylink.screens.HomeScreen
 import com.app.journeylink.screens.Login
 import com.app.journeylink.screens.MainScreen
@@ -49,6 +51,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Seleccion") {
                             SeleccionScreen(navController = navController)
+                        }
+                        composable("Companions") {
+                            CompanionsScreen(navController = navController)
+                        }
+                        composable("CompanionInfo") {
+                            CompanionInfoScreen(navController = navController)
                         }
                     }
                 }

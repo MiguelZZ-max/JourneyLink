@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
@@ -36,7 +37,7 @@ fun HomeScreen(navController: NavHostController) {
             BottomBar(
                 onMapa = { /* ya estás en Home */ },
                 onAdd  = { /* navController.navigate("Create") */ },
-                onPerfil = { /* navController.navigate("Login") */ }
+                onPerfil = { navController.navigate("Companions") }
             )
         }
     ) { padding ->
