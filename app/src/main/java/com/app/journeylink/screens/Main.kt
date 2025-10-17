@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.screens.CompanionInfoScreen
 import com.app.journeylink.screens.CompanionsScreen
+import com.app.journeylink.screens.ConfirmScreen
 import com.app.journeylink.screens.HomeScreen
 import com.app.journeylink.screens.Login
 import com.app.journeylink.screens.MainScreen
@@ -57,6 +58,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("CompanionInfo") {
                             CompanionInfoScreen(navController = navController)
+                        }
+                        composable("Confirmacion") {
+                            ConfirmScreen(navController = navController)
                         }
                     }
                 }
