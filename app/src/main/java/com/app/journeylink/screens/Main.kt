@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.screens.HomeScreen
 import com.app.journeylink.screens.Login
 import com.app.journeylink.screens.MainScreen
 import com.app.journeylink.screens.Splash
@@ -41,6 +42,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Login") {
                             Login(navController = navController)
+                        }
+                        composable("Home") {
+                            HomeScreen(navController = navController)
                         }
                     }
                 }
