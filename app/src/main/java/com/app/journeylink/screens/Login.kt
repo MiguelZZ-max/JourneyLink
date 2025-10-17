@@ -234,7 +234,7 @@ fun Login(navController: NavController) {
             Button(
                 onClick = {
                     // Navegar a la pantalla principal
-                    navController.navigate("Main")
+                    navController.navigate("Home")
                 },
                 modifier = Modifier
                     .width(200.dp)
