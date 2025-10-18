@@ -36,8 +36,8 @@ fun HomeScreen(navController: NavHostController) {
         bottomBar = {
             BottomBar(
                 onMapa = { /* ya estás en Home */ },
-                onAdd  = { /* navController.navigate("Create") */ },
-                onPerfil = { navController.navigate("Companions") }
+                onAdd  = { navController.navigate("Companions") },
+                onPerfil = { navController.navigate("Perfil") }
             )
         }
     ) { padding ->
@@ -208,14 +208,15 @@ private fun BottomBar(onMapa: () -> Unit, onAdd: () -> Unit, onPerfil: () -> Uni
             label = { Text("Mapa") }
         )
         NavigationBarItem(
-            selected = false, onClick = onAdd,
-            icon = { Icon(Icons.Filled.AddCircle, contentDescription = "Agregar") },
-            label = { Text("Agregar") }
-        )
-        NavigationBarItem(
             selected = false, onClick = onPerfil,
             icon = { Icon(Icons.Filled.Person, contentDescription = "Perfil") },
             label = { Text("Perfil") }
         )
+        NavigationBarItem(
+            selected = false, onClick = onAdd,
+            icon = { Icon(Icons.Filled.AddCircle, contentDescription = "Agregar") },
+            label = { Text("Agregar") }
+        )
+
     }
 }

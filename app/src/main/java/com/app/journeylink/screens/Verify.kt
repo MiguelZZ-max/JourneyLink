@@ -44,7 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,17 +55,18 @@ import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LoginScreenPreview() {
+fun VerifyScreenPreview() {
     JourneyLinkTheme {
-        Login(navController = rememberNavController())
+        Verify(navController = rememberNavController())
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavController) {
+fun Verify(navController: NavController) {
     // Estados para los campos de texto
     var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -129,7 +130,7 @@ fun Login(navController: NavController) {
                                 color = Color.Blue,
                                 fontSize = 14.sp
                             )
-                            
+
                         }
                     }
 
@@ -155,86 +156,64 @@ fun Login(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
             }
-            // Logo de la app
-            Image(
-                painter = painterResource(id = R.drawable.door),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(bottom = 32.dp)
+            Text(
+                text = " ",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 40.dp)
             )
 
             // Título
             Text(
-                text = "Inicia sesión",
+                text = "Verificación de identidad",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 40.dp)
             )
-
-            //Campo de Usuario
-            OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Usuario", color = Color.Blue) },
+            // Descripcion
+            Text(
+                text = "Por su seguridad, verifque su identidad usando reconocimiento facial",
+                color = Color.Black,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 40.dp),
+                textAlign = TextAlign.Center
+            )
+            // Icono
+            Image(
+                painter = painterResource(id = R.drawable.face),
+                contentDescription = "App Logo",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-                    cursorColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                ),
-                singleLine = true
+                    .size(200.dp)
+                    .padding(bottom = 32.dp)
+            )
+
+            // Identificacion
+            Text(
+                text = "Coloque su rostro en el marco",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 40.dp),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Su rostro no se almacenara, solo sera usado para verificar su identidad",
+                color = Color.Black,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 40.dp),
+                textAlign = TextAlign.Center
             )
 
 
-            // Campo de contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Contraseña", color = Color.Blue) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 32.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-                    cursorColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = image,
-                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
-                            tint = Color.Blue
-                        )
-                    }
-                }
-            )
-
-            // Botón Entrar
+            // Botón Continuar
             Button(
                 onClick = {
                     // Navegar a la pantalla principal
-                    navController.navigate("Verify")
+                    navController.navigate("Home")
                 },
                 modifier = Modifier
                     .width(200.dp)
@@ -247,7 +226,7 @@ fun Login(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Entrar",
+                    text = "Iniciar escaneo",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -257,12 +236,12 @@ fun Login(navController: NavController) {
             TextButton(
                 onClick = {
                     // Navegar a la pantalla de registro
-                    navController.navigate("Register")
+                    navController.navigate("Login")
                 },
                 modifier = Modifier.padding(bottom = 40.dp)
             ) {
                 Text(
-                    text = "Registrarme",
+                    text = "Volver",
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
