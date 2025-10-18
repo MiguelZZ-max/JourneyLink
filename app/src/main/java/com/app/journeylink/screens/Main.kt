@@ -18,6 +18,8 @@ import com.app.journeylink.screens.ConfirmScreen
 import com.app.journeylink.screens.HomeScreen
 import com.app.journeylink.screens.Login
 import com.app.journeylink.screens.MainScreen
+import com.app.journeylink.screens.MisViajesScreen
+import com.app.journeylink.screens.Register
 import com.app.journeylink.screens.SeleccionScreen
 import com.app.journeylink.screens.Splash
 import com.app.journeylink.ui.theme.JourneyLinkTheme
@@ -65,6 +67,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Pago") {
                             PagoScreen(navController = navController)
+                        }
+                        composable("Register") {
+                            Register(navController = navController)
+                        }
+                        composable("Seguimiento") {
+                            MisViajesScreen(navController = navController)
                         }
                     }
                 }

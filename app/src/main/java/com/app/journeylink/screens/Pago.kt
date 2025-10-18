@@ -222,10 +222,14 @@ fun PagoScreen(
             // Botón de pago
             Button(
                 onClick = {
+                    // Navegar a la pantalla Seguimiento.kt
+                    navController!!.navigate("Seguimiento")
+
                     // Validar campos antes de proceder
                     if (validarCampos(cardNumber, cardHolder, selectedMonth, selectedYear, cvv)) {
                         onPagarClick()
                     }
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
