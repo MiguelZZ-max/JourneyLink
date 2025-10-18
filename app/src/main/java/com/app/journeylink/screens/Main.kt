@@ -1,5 +1,6 @@
 package com.app.journeylink
 
+import PagoScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,11 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.screens.CompanionInfoScreen
+import com.app.journeylink.screens.CompanionsScreen
+import com.app.journeylink.screens.ConfirmScreen
+import com.app.journeylink.screens.HistorialScreen
 import com.app.journeylink.screens.HomeScreen
 import com.app.journeylink.screens.Login
 import com.app.journeylink.screens.MainScreen
+import com.app.journeylink.screens.MisViajesScreen
+import com.app.journeylink.screens.PerfilScreen
+import com.app.journeylink.screens.Register
 import com.app.journeylink.screens.SeleccionScreen
 import com.app.journeylink.screens.Splash
+import com.app.journeylink.screens.Verify
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,6 +58,33 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Seleccion") {
                             SeleccionScreen(navController = navController)
+                        }
+                        composable("Companions") {
+                            CompanionsScreen(navController = navController)
+                        }
+                        composable("CompanionInfo") {
+                            CompanionInfoScreen(navController = navController)
+                        }
+                        composable("Confirmacion") {
+                            ConfirmScreen(navController = navController)
+                        }
+                        composable("Pago") {
+                            PagoScreen(navController = navController)
+                        }
+                        composable("Register") {
+                            Register(navController = navController)
+                        }
+                        composable("Seguimiento") {
+                            MisViajesScreen(navController = navController)
+                        }
+                        composable("Verify") {
+                            Verify(navController = navController)
+                        }
+                        composable("Historial") {
+                            HistorialScreen(navController = navController)
+                        }
+                        composable("Perfil") {
+                            PerfilScreen(navController = navController)
                         }
                     }
                 }

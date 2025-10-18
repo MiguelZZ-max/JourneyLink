@@ -44,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,17 +54,18 @@ import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LoginScreenPreview() {
+fun RegisterScreenPreview() {
     JourneyLinkTheme {
-        Login(navController = rememberNavController())
+        Register(navController = rememberNavController())
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavController) {
+fun Register(navController: NavController) {
     // Estados para los campos de texto
     var username by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -129,7 +129,7 @@ fun Login(navController: NavController) {
                                 color = Color.Blue,
                                 fontSize = 14.sp
                             )
-                            
+
                         }
                     }
 
@@ -155,18 +155,25 @@ fun Login(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
             }
+            Text(
+                text = " ",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 40.dp)
+            )
             // Logo de la app
             Image(
-                painter = painterResource(id = R.drawable.door),
+                painter = painterResource(id = R.drawable.plane),
                 contentDescription = "App Logo",
                 modifier = Modifier
-                    .size(300.dp)
+                    .size(200.dp)
                     .padding(bottom = 32.dp)
             )
 
             // Título
             Text(
-                text = "Inicia sesión",
+                text = "Registro",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -178,6 +185,28 @@ fun Login(navController: NavController) {
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Usuario", color = Color.Blue) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                ),
+                singleLine = true
+            )
+
+            //Campo de email
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo", color = Color.Blue) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -234,7 +263,7 @@ fun Login(navController: NavController) {
             Button(
                 onClick = {
                     // Navegar a la pantalla principal
-                    navController.navigate("Verify")
+                    navController.navigate("Main")
                 },
                 modifier = Modifier
                     .width(200.dp)
@@ -247,7 +276,7 @@ fun Login(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Entrar",
+                    text = "Registrarme",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -257,12 +286,12 @@ fun Login(navController: NavController) {
             TextButton(
                 onClick = {
                     // Navegar a la pantalla de registro
-                    navController.navigate("Register")
+                    navController.navigate("Login")
                 },
                 modifier = Modifier.padding(bottom = 40.dp)
             ) {
                 Text(
-                    text = "Registrarme",
+                    text = "Volver",
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
@@ -272,3 +301,4 @@ fun Login(navController: NavController) {
         }
     }
 }
+

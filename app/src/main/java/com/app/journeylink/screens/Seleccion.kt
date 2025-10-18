@@ -348,7 +348,7 @@ fun SeleccionScreen(
             // Botón Buscar
             Button(
                 onClick = {
-                    // TODO: acción de búsqueda
+                    navController.navigate("Confirmacion")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
