@@ -1,18 +1,9 @@
 package com.app.journeylink.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,25 +11,13 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,127 +32,81 @@ import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, name = "Login Portrait")
 @Composable
-fun LoginScreenPreview() {
-    JourneyLinkTheme {
-        Login(navController = rememberNavController())
-    }
+private fun LoginPortraitPreview() {
+    JourneyLinkTheme { Login(rememberNavController()) }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(navController: NavController) {
-    // Estados persistentes ante recreación (cambio de idioma)
+    // --- Estado persistente (se conserva tras recreación por cambio de idioma) ---
     var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    // Estado para el dropdown de idioma
-    var languageExpanded by rememberSaveable { mutableStateOf(false) }
+    var langExpanded by rememberSaveable { mutableStateOf(false) }
     var selectedLanguage by rememberSaveable { mutableStateOf(LanguageUtils.getCurrentLanguageDisplayName()) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF87CEEB)) // Fondo azul claro
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    val cfg = LocalConfiguration.current
+    val isLandscape = cfg.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // --- Widgets reutilizables ---
+    @Composable
+    fun LanguageSwitcher() {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Espaciador superior
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Selector de idioma
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Icono de ayuda
-                IconButton(
-                    onClick = { /* TODO: acción de ayuda */ },
-                    modifier = Modifier.size(40.dp)
+            IconButton(onClick = { /* TODO ayuda */ }, modifier = Modifier.size(40.dp)) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Help,
+                    contentDescription = stringResource(R.string.login_help),
+                    tint = Color.White
+                )
+            }
+            Box {
+                Button(
+                    onClick = { langExpanded = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Help,
-                        contentDescription = stringResource(R.string.login_help),
-                        tint = Color.White
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = stringResource(R.string.login_lang),
+                            tint = Color.Blue
+                        )
+                        Text(text = selectedLanguage, color = Color.Blue, fontSize = 14.sp)
+                    }
                 }
-
-                // Dropdown de idioma
-                Box {
-                    Button(
-                        onClick = { languageExpanded = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = stringResource(R.string.login_lang),
-                                tint = Color.Blue
-                            )
-                            Text(
-                                text = selectedLanguage,
-                                color = Color.Blue,
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-
-                    DropdownMenu(
-                        expanded = languageExpanded,
-                        onDismissRequest = { languageExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Español") },
-                            onClick = {
-                                selectedLanguage = "Español"
-                                languageExpanded = false
-                                LanguageUtils.setAppLanguage("es") // aplica y recrea Activity
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("English") },
-                            onClick = {
-                                selectedLanguage = "English"
-                                languageExpanded = false
-                                LanguageUtils.setAppLanguage("en")
-                            }
-                        )
-                    }
+                DropdownMenu(expanded = langExpanded, onDismissRequest = { langExpanded = false }) {
+                    DropdownMenuItem(text = { Text("Español") }, onClick = {
+                        selectedLanguage = "Español"
+                        langExpanded = false
+                        LanguageUtils.setAppLanguage("es")
+                    })
+                    DropdownMenuItem(text = { Text("English") }, onClick = {
+                        selectedLanguage = "English"
+                        langExpanded = false
+                        LanguageUtils.setAppLanguage("en")
+                    })
                 }
             }
+        }
+    }
 
-            Spacer(modifier = Modifier.width(8.dp))
-
-            // Logo de la app
-            Image(
-                painter = painterResource(id = R.drawable.door),
-                contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(bottom = 32.dp)
-            )
-
-            // Título
-            Text(
-                text = stringResource(R.string.login_entrar),
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 40.dp)
-            )
-
-            // Campo de Usuario
+    @Composable
+    fun FormBlock(modifier: Modifier = Modifier) {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.login_user)) },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -187,38 +120,21 @@ fun Login(navController: NavController) {
                     cursorColor = Color.White,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
-                ),
-                singleLine = true
+                )
             )
 
-            // Campo de contraseña
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.login_pass)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 32.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-                    cursorColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image =
-                        if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                    val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            imageVector = image,
+                            imageVector = icon,
                             contentDescription = if (passwordVisible)
                                 stringResource(R.string.pass_hide)
                             else
@@ -226,18 +142,28 @@ fun Login(navController: NavController) {
                             tint = Color.Blue
                         )
                     }
-                }
-            )
-
-            // Botón Entrar
-            Button(
-                onClick = {
-                    navController.navigate("Verify")
                 },
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
+            )
+
+            Button(
+                onClick = { navController.navigate("Verify") },
+                modifier = Modifier
                     .width(200.dp)
-                    .height(60.dp)
-                    .padding(bottom = 16.dp),
+                    .height(60.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,
@@ -251,25 +177,101 @@ fun Login(navController: NavController) {
                 )
             }
 
-            // Texto Registrarme
             TextButton(
                 onClick = { navController.navigate("Register") },
-                modifier = Modifier.padding(bottom = 40.dp)
+                modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.login_reg),
                     color = Color.White,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
+        }
+    }
 
-            // (Opcional) Indicador de diagnóstico: borra cuando ya veas que cambia.
-            // Text(
-            //     text = "Lang: " + LanguageUtils.getCurrentLanguageDisplayName(),
-            //     color = Color.White,
-            //     fontSize = 12.sp
-            // )
+    // --- Layout raíz responsivo ---
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF87CEEB)) // azul claro
+            .padding(16.dp)
+    ) {
+        // Selector de idioma flotando arriba-derecha
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) { LanguageSwitcher() }
+        }
+
+        if (isLandscape) {
+            // ===== Diseño HORIZONTAL =====
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Lado izquierdo: logo + título
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.door),
+                        contentDescription = stringResource(R.string.app_name),
+                        modifier = Modifier.size(220.dp)
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.login_entrar), // usa un único string
+                        color = Color.White,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                // Lado derecho: formulario (ancho acotado)
+                FormBlock(
+                    modifier = Modifier
+                        .weight(1f)
+                        .widthIn(max = 420.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+        } else {
+            // ===== Diseño VERTICAL =====
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(28.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.door),
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier
+                        .size(300.dp)
+                        .padding(bottom = 24.dp)
+                )
+                Text(
+                    text = stringResource(R.string.login_entrar),
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+                FormBlock(modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(24.dp))
+            }
         }
     }
 }

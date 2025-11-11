@@ -1,18 +1,9 @@
 package com.app.journeylink.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,25 +11,13 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -53,139 +32,83 @@ import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true, showSystemUi = true, name = "Register Portrait")
 @Composable
-fun RegisterScreenPreview() {
-    JourneyLinkTheme {
-        Register(navController = rememberNavController())
-    }
+private fun RegisterPreview() {
+    JourneyLinkTheme { Register(rememberNavController()) }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Register(navController: NavController) {
-    // Estados para los campos de texto
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+    // --- Estados persistentes ---
+    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-    // Estado para el dropdown de idioma
-    var languageExpanded by remember { mutableStateOf(false) }
-    var selectedLanguage by remember { mutableStateOf("Español") }
+    var langExpanded by rememberSaveable { mutableStateOf(false) }
+    var selectedLanguage by rememberSaveable { mutableStateOf(LanguageUtils.getCurrentLanguageDisplayName()) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF87CEEB)) // Fondo azul claro
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+    val cfg = LocalConfiguration.current
+    val isLandscape = cfg.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    // --- Componentes reutilizables ---
+    @Composable
+    fun LanguageSwitcher() {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(){
-                Text(
-                    text = " ",
-                    color = Color.White,
-                    fontSize = 30.sp
+            IconButton(onClick = { /* TODO: ayuda */ }, modifier = Modifier.size(40.dp)) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Help,
+                    contentDescription = stringResource(R.string.login_help),
+                    tint = Color.White
                 )
             }
-            // Selector de idioma
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Icono de ayuda
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier.size(40.dp)
+            Box {
+                Button(
+                    onClick = { langExpanded = true },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Help,
-                        contentDescription = stringResource(R.string.login_help),
-                        tint = Color.White
-                    )
-                }
-                // Dropdown de idioma
-                Box {
-                    Button(
-                        onClick = { languageExpanded = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White
-                        ),
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = stringResource(R.string.login_lang),
-                                tint = Color.Blue
-                            )
-                            Text(
-                                text = selectedLanguage,
-                                color = Color.Blue,
-                                fontSize = 14.sp
-                            )
-
-                        }
-                    }
-
-                    DropdownMenu(
-                        expanded = languageExpanded,
-                        onDismissRequest = { languageExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Español") },
-                            onClick = {
-                                selectedLanguage = "Español"
-                                languageExpanded = false
-                            }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = stringResource(R.string.login_lang),
+                            tint = Color.Blue
                         )
-                        DropdownMenuItem(
-                            text = { Text("English") },
-                            onClick = {
-                                selectedLanguage = "English"
-                                languageExpanded = false
-                            }
-                        )
+                        Text(text = selectedLanguage, color = Color.Blue, fontSize = 14.sp)
                     }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                DropdownMenu(expanded = langExpanded, onDismissRequest = { langExpanded = false }) {
+                    DropdownMenuItem(text = { Text("Español") }, onClick = {
+                        selectedLanguage = "Español"
+                        langExpanded = false
+                        LanguageUtils.setAppLanguage("es")
+                    })
+                    DropdownMenuItem(text = { Text("English") }, onClick = {
+                        selectedLanguage = "English"
+                        langExpanded = false
+                        LanguageUtils.setAppLanguage("en")
+                    })
+                }
             }
-            Text(
-                text = " ",
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 40.dp)
-            )
-            // Logo de la app
-            Image(
-                painter = painterResource(id = R.drawable.plane),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(bottom = 32.dp)
-            )
+        }
+    }
 
-            // Título
-            Text(
-                text = stringResource(R.string.reg_titulo),
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 40.dp)
-            )
-
-            //Campo de Usuario
+    @Composable
+    fun FormBlock(modifier: Modifier = Modifier) {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Usuario
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text(stringResource(R.string.reg_user)) },
+                singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -199,15 +122,15 @@ fun Register(navController: NavController) {
                     cursorColor = Color.White,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
-                ),
-                singleLine = true
+                )
             )
-
-            //Campo de email
+            // Email
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text(stringResource(R.string.reg_mail)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -221,19 +144,32 @@ fun Register(navController: NavController) {
                     cursorColor = Color.White,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
-                ),
-                singleLine = true
+                )
             )
-
-
-            // Campo de contraseña
+            // Password
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.reg_pass)) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    val icon = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = if (passwordVisible)
+                                stringResource(R.string.pass_hide)
+                            else
+                                stringResource(R.string.pass_show),
+                            tint = Color.Blue
+                        )
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 32.dp),
+                    .padding(bottom = 24.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -244,32 +180,15 @@ fun Register(navController: NavController) {
                     cursorColor = Color.White,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = image,
-                            contentDescription = if (passwordVisible) stringResource(R.string.pass_hide) else stringResource(R.string.pass_show),
-                            tint = Color.Blue
-                        )
-                    }
-                }
+                )
             )
 
-            // Botón Entrar
+            // Botón registrar
             Button(
-                onClick = {
-                    // Continuar al perfil
-                    navController.navigate("Perfil")
-                },
+                onClick = { navController.navigate("Perfil") },
                 modifier = Modifier
                     .width(200.dp)
-                    .height(60.dp)
-                    .padding(bottom = 16.dp),
+                    .height(60.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,
@@ -283,23 +202,101 @@ fun Register(navController: NavController) {
                 )
             }
 
-            // Texto Registrarme
+            // Volver
             TextButton(
-                onClick = {
-                    // Navegar a la pantalla de registro
-                    navController.navigate("Login")
-                },
-                modifier = Modifier.padding(bottom = 40.dp)
+                onClick = { navController.navigate("Login") },
+                modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.btn_volver),
                     color = Color.White,
-                    fontSize = 20.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
+        }
+    }
 
+    // --- Layout raíz responsivo ---
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF87CEEB))
+            .padding(16.dp)
+    ) {
+        // Idioma arriba-derecha
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) { LanguageSwitcher() }
+        }
+
+        if (isLandscape) {
+            // ===== HORIZONTAL =====
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Izquierda: logo + título
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.plane),
+                        contentDescription = stringResource(R.string.app_name),
+                        modifier = Modifier.size(200.dp)
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.reg_titulo),
+                        color = Color.White,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                // Derecha: formulario acotado
+                FormBlock(
+                    modifier = Modifier
+                        .weight(1f)
+                        .widthIn(max = 420.dp)
+                        .align(Alignment.CenterVertically)
+                )
+            }
+        } else {
+            // ===== VERTICAL =====
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(28.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.plane),
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(bottom = 24.dp)
+                )
+                Text(
+                    text = stringResource(R.string.reg_titulo),
+                    color = Color.White,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+                FormBlock(modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(24.dp))
+            }
         }
     }
 }
-
