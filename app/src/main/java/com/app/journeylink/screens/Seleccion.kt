@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -83,19 +85,19 @@ fun SeleccionScreen(
             NavigationBar {
                 NavigationBarItem(
                     icon = { Icon(Icons.Filled.Place, contentDescription = null) },
-                    label = { Text("Explorar") },
+                    label = { Text(stringResource(R.string.barra_ubicacion)) },
                     selected = true,
                     onClick = {}
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Filled.Person, contentDescription = null) },
-                    label = { Text("Perfil") },
+                    label = { Text(stringResource(R.string.barra_perfil)) },
                     selected = false,
                     onClick = {}
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                    label = { Text("Nuevo") },
+                    label = { Text(stringResource(R.string.barra_agregar)) },
                     selected = false,
                     onClick = {}
                 )
@@ -120,7 +122,7 @@ fun SeleccionScreen(
             ) {
                 Column(Modifier.padding(12.dp)) {
                     Text(
-                        "¿A dónde vas?",
+                        stringResource(R.string.select_donde),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
@@ -131,13 +133,13 @@ fun SeleccionScreen(
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         SegmentedToggle(
-                            text = "Ida y vuelta",
+                            text = stringResource(R.string.select_btntravel),
                             selected = roundTrip,
                             onClick = { roundTrip = true },
                             modifier = Modifier.weight(1f)
                         )
                         SegmentedToggle(
-                            text = "Solo ida",
+                            text = stringResource(R.string.select_btnstay),
                             selected = !roundTrip,
                             onClick = { roundTrip = false },
                             modifier = Modifier.weight(1f)
@@ -159,22 +161,22 @@ fun SeleccionScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
 
-                    LabeledField(label = "Desde") {
+                    LabeledField(label = stringResource(R.string.select_desde)) {
                         OutlinedTextField(
                             value = from,
                             onValueChange = { from = it },
-                            placeholder = { Text("Ciudad de origen") },
+                            placeholder = { Text(stringResource(R.string.select_ciudad)) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    LabeledField(label = "Hacia") {
+                    LabeledField(label = stringResource(R.string.select_hacia)) {
                         Box {
                             OutlinedTextField(
                                 value = to,
                                 onValueChange = { to = it },
-                                placeholder = { Text("Destino") },
+                                placeholder = { Text(stringResource(R.string.select_dest)) },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -195,18 +197,18 @@ fun SeleccionScreen(
                     }
 
                     // Partida
-                    LabeledField(label = "Partida") {
+                    LabeledField(label = stringResource(R.string.select_partida)) {
                         Box {
                             OutlinedTextField(
                                 value = departDate.format(fmt),
                                 onValueChange = {},
-                                placeholder = { Text("Selecciona la fecha de partida") },
+                                placeholder = { Text(stringResource(R.string.select_partidasel)) },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 readOnly = true,
                                 trailingIcon = {
                                     IconButton(onClick = { showDepartPicker = true }) {
-                                        Icon(Icons.Filled.DateRange, contentDescription = "Seleccionar fecha")
+                                        Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.conf_fecha))
                                     }
                                 }
                             )
@@ -225,7 +227,7 @@ fun SeleccionScreen(
                                                 }
                                             }
                                             showDepartPicker = false
-                                        }) { Text("Aceptar") }
+                                        }) { Text(stringResource(R.string.btn_accept)) }
                                     },
                                     dismissButton = { TextButton(onClick = { showDepartPicker = false }) { Text("Cancelar") } }
                                 ) {
@@ -241,7 +243,7 @@ fun SeleccionScreen(
                             OutlinedTextField(
                                 value = if (roundTrip) returnDate.format(fmt) else "—",
                                 onValueChange = {},
-                                placeholder = { Text("Selecciona la fecha de regreso") },
+                                placeholder = { Text(stringResource(R.string.select_regreso)) },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 readOnly = true,
@@ -266,7 +268,7 @@ fun SeleccionScreen(
                                                 }
                                             }
                                             showReturnPicker = false
-                                        }) { Text("Aceptar") }
+                                        }) { Text(stringResource(R.string.btn_accept)) }
                                     },
                                     dismissButton = { TextButton(onClick = { showReturnPicker = false }) { Text("Cancelar") } }
                                 ) {
@@ -291,7 +293,7 @@ fun SeleccionScreen(
                                 value = travelers,
                                 onValueChange = {},
                                 readOnly = true,
-                                label = { Text("Viajero") },
+                                label = { Text(stringResource(R.string.select_viajeros)) },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = travelersExpanded) }
                             )
                             ExposedDropdownMenu(
@@ -323,7 +325,7 @@ fun SeleccionScreen(
                                 value = travelClass,
                                 onValueChange = {},
                                 readOnly = true,
-                                label = { Text("Clase") },
+                                label = { Text(stringResource(R.string.select_clase)) },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = classExpanded) }
                             )
                             ExposedDropdownMenu(
@@ -358,7 +360,7 @@ fun SeleccionScreen(
             ) {
                 Icon(Icons.Filled.Search, contentDescription = null, tint = Color.White)
                 Spacer(Modifier.width(8.dp))
-                Text("Buscar", color = Color.White)
+                Text(stringResource(R.string.select_buscar), color = Color.White)
             }
 
         }

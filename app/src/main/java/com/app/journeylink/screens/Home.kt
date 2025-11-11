@@ -20,12 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.ui.theme.JourneyLinkTheme
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun HomePreview() {
+    JourneyLinkTheme {
+        HomeScreen(navController = rememberNavController())
+    }
+}
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val fondo = Color(0xFFE9EDF1)
@@ -70,7 +80,7 @@ fun HomeScreen(navController: NavHostController) {
                         listOf(
                             "Velaria Mall",
                             "Isla San Marcos",
-                            "Central Camionera de AGS",
+                            stringResource(R.string.home_central),
                             "Altaria Mall"
                         )
                     )
@@ -83,7 +93,7 @@ fun HomeScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(contentColor = azulTarjeta)
             ) {
-                Text(text = "Siguiente", color = Color.White)
+                Text(text = stringResource(R.string.home_next), color = Color.White)
             }
         }
     }
@@ -151,7 +161,7 @@ private fun SearchBox() {
         onValueChange = { query = it },
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         placeholder = {
-            Text("¿A dónde y por dónde?", maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(stringResource(R.string.home_donde), maxLines = 1, overflow = TextOverflow.Ellipsis)
         },
         singleLine = true,
         textStyle = MaterialTheme.typography.bodyLarge,   // tamaño/altura de línea correctos
@@ -205,17 +215,17 @@ private fun BottomBar(onMapa: () -> Unit, onAdd: () -> Unit, onPerfil: () -> Uni
         NavigationBarItem(
             selected = true, onClick = onMapa,
             icon = { Icon(Icons.Filled.Place, contentDescription = "Mapa") },
-            label = { Text("Mapa") }
+            label = { stringResource(R.string.barra_ubicacion)}
         )
         NavigationBarItem(
             selected = false, onClick = onPerfil,
             icon = { Icon(Icons.Filled.Person, contentDescription = "Perfil") },
-            label = { Text("Perfil") }
+            label = { stringResource(R.string.barra_perfil)}
         )
         NavigationBarItem(
             selected = false, onClick = onAdd,
             icon = { Icon(Icons.Filled.AddCircle, contentDescription = "Agregar") },
-            label = { Text("Agregar") }
+            label = { stringResource(R.string.barra_agregar)}
         )
 
     }

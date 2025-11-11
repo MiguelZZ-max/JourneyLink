@@ -9,12 +9,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -57,7 +59,7 @@ fun PagoScreen(
         ) {
             // Título
             Text(
-                text = "Pago de Viaje",
+                text = stringResource(R.string.pago_titulo),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
@@ -84,7 +86,7 @@ fun PagoScreen(
 
             // Selección de tarjeta
             Text(
-                text = "Selecciona tu tarjeta",
+                text = stringResource(R.string.pago_tarjeta),
                 fontSize = 16.sp,
                 color = Color.Black,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -96,7 +98,7 @@ fun PagoScreen(
                 onExpandedChange = { }
             ) {
                 OutlinedTextField(
-                    value = selectedCard.ifEmpty { "Seleccionar tarjeta" },
+                    value = selectedCard.ifEmpty { stringResource(R.string.pago_tarjetasel) },
                     onValueChange = { },
                     readOnly = true,
                     modifier = Modifier
@@ -125,7 +127,7 @@ fun PagoScreen(
             OutlinedTextField(
                 value = cardNumber,
                 onValueChange = { cardNumber = it },
-                placeholder = { Text("No. Tarjeta") },
+                placeholder = { Text(stringResource(R.string.pago_tarjetanum)) },
                 modifier = Modifier.fillMaxWidth().background(Color.White),
             )
 
@@ -135,7 +137,7 @@ fun PagoScreen(
             OutlinedTextField(
                 value = cardHolder,
                 onValueChange = { cardHolder = it },
-                placeholder = { Text("Nombre Titular") },
+                placeholder = { Text(stringResource(R.string.pago_tarjetanom)) },
                 modifier = Modifier.fillMaxWidth().background(Color.White),
             )
 
@@ -153,7 +155,7 @@ fun PagoScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     OutlinedTextField(
-                        value = selectedMonth.ifEmpty { "Mes" },
+                        value = selectedMonth.ifEmpty { stringResource(R.string.pago_mes) },
                         onValueChange = { },
                         readOnly = true,
                         modifier = Modifier
@@ -184,7 +186,7 @@ fun PagoScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     OutlinedTextField(
-                        value = selectedYear.ifEmpty { "Año" },
+                        value = selectedYear.ifEmpty { stringResource(R.string.pago_ano) },
                         onValueChange = { },
                         readOnly = true,
                         modifier = Modifier
@@ -240,7 +242,7 @@ fun PagoScreen(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "PAGAR",
+                    text = stringResource(R.string.pago_boton),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
@@ -278,17 +280,17 @@ private fun BottomBar(onMapa: () -> Unit, onAdd: () -> Unit, onPerfil: () -> Uni
     NavigationBar(containerColor = Color.White, tonalElevation = 4.dp) {
         NavigationBarItem(
             selected = true, onClick = onMapa,
-            icon = { Icon(Icons.Filled.Place, contentDescription = "Mapa") },
-            label = { Text("Mapa") }
+            icon = { Icon(Icons.Filled.Place, contentDescription = stringResource(R.string.barra_ubicacion)) },
+            label = { Text("Home") }
         )
         NavigationBarItem(
             selected = false, onClick = onAdd,
-            icon = { Icon(Icons.Filled.AddCircle, contentDescription = "Agregar") },
-            label = { Text("Agregar") }
+            icon = { Icon(Icons.Filled.AddCircle, contentDescription = stringResource(R.string.barra_agregar)) },
+            label = { Text("Companions") }
         )
         NavigationBarItem(
             selected = false, onClick = onPerfil,
-            icon = { Icon(Icons.Filled.Person, contentDescription = "Perfil") },
+            icon = { Icon(Icons.Filled.Person, contentDescription = stringResource(R.string.barra_perfil)) },
             label = { Text("Perfil") }
         )
     }

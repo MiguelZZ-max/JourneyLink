@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 
 @Composable
 fun CompanionsScreen(navController: NavController) {
@@ -64,7 +66,7 @@ fun CompanionsScreen(navController: NavController) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        "Encuentra Acompañantes por tu área",
+                        stringResource(R.string.comp_find),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -94,8 +96,8 @@ private fun FeaturedCompanionCard(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Photo", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                Text("Nombre", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.comp_foto), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.comp_nombre), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 Text("Rating", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             }
 
@@ -157,11 +159,11 @@ private fun RatingStars(
 @Composable
 private fun CompanionList() {
     Column {
-        CompanionItem(name = "Chespirito", rating = 4, distance = "A 5 km de ti")
+        CompanionItem(name = "Chespirito", rating = 4, distance = stringResource(R.string.comp_distancia))
         Spacer(Modifier.height(12.dp))
-        CompanionItem(name = "Chespirito", rating = 3, distance = "A 5 km de ti")
+        CompanionItem(name = "Chespirito", rating = 3, distance = stringResource(R.string.comp_distancia))
         Spacer(Modifier.height(12.dp))
-        CompanionItem(name = "Chespirito", rating = 5, distance = "A 5 km de ti")
+        CompanionItem(name = "Chespirito", rating = 5, distance = stringResource(R.string.comp_distancia))
     }
 }
 
