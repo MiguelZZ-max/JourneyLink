@@ -4,11 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +33,15 @@ fun CompanionsScreen(navController: NavController) {
     val skyBlue = Color(0xFF87CEEB)
 
     Scaffold(
-        containerColor = skyBlue
+        containerColor = skyBlue,
+        bottomBar = {
+            // Barra igual que en Home; aquí marcamos seleccionado el botón "Agregar"
+            JLBottomBarCompanions(
+                onMapa = { navController.navigate("Home") },
+                onAdd = { /* ya estás en Companions */ },
+                onPerfil = { navController.navigate("Perfil") }
+            )
+        }
     ) { inner ->
         Column(
             modifier = Modifier
@@ -44,10 +55,7 @@ fun CompanionsScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 220.dp),
-                onClick = {
-                    // Navegar a la siguiente pantalla al hacer clic en el botón
-                    navController.navigate("CompanionInfo")
-                }
+                onClick = { navController.navigate("CompanionInfo") }
             )
 
             Spacer(Modifier.height(16.dp))
@@ -70,8 +78,6 @@ fun CompanionsScreen(navController: NavController) {
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
-
-                    // Sección con lista de acompañantes (similar a la imagen)
                     Spacer(Modifier.height(16.dp))
                     CompanionList()
                 }
@@ -79,6 +85,8 @@ fun CompanionsScreen(navController: NavController) {
         }
     }
 }
+
+/* -------------------- UI interna -------------------- */
 
 @Composable
 private fun FeaturedCompanionCard(
@@ -103,7 +111,7 @@ private fun FeaturedCompanionCard(
 
             Spacer(Modifier.height(12.dp))
 
-            // Fila con el botón que será clickeable
+            // Fila con el botón clickeable
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -120,21 +128,20 @@ private fun FeaturedCompanionCard(
                     contentAlignment = Alignment.Center
                 ) { Icon(Icons.Outlined.Image, contentDescription = null, tint = Color.Black) }
 
-
                 Button(
-                    onClick = onClick,  // Navegará a CompanionInfoScreen
+                    onClick = onClick,
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 12.dp)
                 ) {
                     Text(
-                        text = "Chespirito",  // El nombre que quieres mostrar en el botón
+                        text = "Chespirito",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
 
-                RatingStars(rating = 4)  // Placeholder de rating
+                RatingStars(rating = 4)
             }
 
             Spacer(Modifier.height(120.dp))
@@ -181,21 +188,53 @@ private fun CompanionItem(name: String, rating: Int, distance: String) {
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color(0xFFEFEFEF)),
             contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Outlined.Image, contentDescription = null, tint = Color.Black)
-        }
+        ) { Icon(Icons.Outlined.Image, contentDescription = null, tint = Color.Black) }
 
         // Nombre y distancia
-        Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp)
+        ) {
             Text(text = name, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(text = distance, style = MaterialTheme.typography.bodySmall)
         }
 
-        // Calificación
         RatingStars(rating = rating)
     }
 }
 
+/* ---------------- Barra inferior (idéntica en rutas a Home) ---------------- */
+
+@Composable
+private fun JLBottomBarCompanions(
+    onMapa: () -> Unit,
+    onAdd: () -> Unit,
+    onPerfil: () -> Unit
+) {
+    NavigationBar(containerColor = Color.White, tonalElevation = 4.dp) {
+        NavigationBarItem(
+            selected = false,
+            onClick = onMapa,
+            icon = { Icon(Icons.Filled.Place, contentDescription = stringResource(R.string.barra_ubicacion)) },
+            label = {}
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = onPerfil,
+            icon = { Icon(Icons.Filled.Person, contentDescription = stringResource(R.string.barra_perfil)) },
+            label = {}
+        )
+        NavigationBarItem(
+            selected = true, // ← estás en “Agregar/Companions”
+            onClick = onAdd,
+            icon = { Icon(Icons.Filled.AddCircle, contentDescription = stringResource(R.string.barra_agregar)) },
+            label = {}
+        )
+    }
+}
+
+/* Preview */
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun CompanionsScreenPreview() {
