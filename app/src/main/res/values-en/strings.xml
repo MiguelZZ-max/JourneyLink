@@ -1,0 +1,111 @@
+<resources>
+    <string name="app_name">JourneyLink</string>
+    <string name="main_txt">Why travel alone?</string>
+    <string name="main_next">Next screen</string>
+
+    <string name="barra_ubicacion">Location</string>
+    <string name="barra_perfil">Profile</string>
+    <string name="barra_agregar">Add Companion</string>
+
+    <string name="btn_volver">Back</string>
+    <string name="btn_accept">Accept</string>
+
+    <string name="pass_hide">Hide password</string>
+    <string name="pass_show">Show password</string>
+
+    <string name="compinfo_comment">Comments about the Companion</string>
+    <string name="compinfo_commentej">Example comment about the companion from another companion.</string>
+
+    <string name="comp_find">Find Companions in your area</string>
+    <string name="comp_foto">Photo</string>
+    <string name="comp_nombre">Name</string>
+    <string name="comp_distancia">5 km from you</string>
+
+    <string name="conf_nomviaje">Trip Name</string>
+    <string name="conf_fecha">Date</string>
+    <string name="conf_nombre">Name</string>
+    <string name="conf_origen">Origin</string>
+    <string name="conf_destino">Destination</string>
+    <string name="conf_salida">Departure</string>
+    <string name="conf_llegada">Arrival</string>
+    <string name="conf_linea">Airline</string>
+    <string name="conf_duracion">Duration</string>
+    <string name="conf_acomp">Companion</string>
+    <string name="conf_nomacomp">Companion Name</string>
+    <string name="conf_total">Total to Pay:</string>
+    <string name="conf_confirmar">Confirm Payment</string>
+
+    <string name="hist_filtrar">Filter trips:</string>
+    <string name="hist_buscar">Search</string>
+    <string name="hist_filtrardesc">Show filters</string>
+    <string name="hist_viajes">All trips</string>
+    <string name="hist_viajesact">Current trips</string>
+    <string name="hist_viajesant">Previous trips</string>
+    <string name="hist_viajeslista">Trips</string>
+    <string name="hist_seg">Follow Trip</string>
+
+    <string name="home_central">Aguascalientes Central Bus Station</string>
+    <string name="home_donde">Where and via where?</string>
+    <string name="home_next">Next</string>
+
+    <string name="login_inicia">Log in</string>
+    <string name="login_user">Username</string>
+    <string name="login_pass">Password</string>
+    <string name="login_entrar">Enter</string>
+    <string name="login_reg">Sign Up</string>
+    <string name="login_help">Help</string>
+    <string name="login_lang">Select language</string>
+
+    <string name="pago_titulo">Trip Payment</string>
+    <string name="pago_tarjeta">Select your card</string>
+    <string name="pago_tarjetasel">Select card</string>
+    <string name="pago_tarjetanum">Card No.</string>
+    <string name="pago_tarjetanom">Cardholder Name</string>
+    <string name="pago_mes">Month</string>
+    <string name="pago_ano">Year</string>
+    <string name="pago_boton">Pay</string>
+
+    <string name="perfil_age">Member since 2024</string>
+    <string name="perfil_calf">Rate us!</string>
+    <string name="perfil_resena">Leave a review on Play Store</string>
+    <string name="perfil_historial">Trip history</string>
+    <string name="perfil_ver">View my trips</string>
+    <string name="perfil_config">Settings</string>
+    <string name="perfil_notf">Notifications</string>
+    <string name="perfil_temaclaro">Switch to light theme</string>
+    <string name="perfil_temaoscuro">Switch to dark theme</string>
+    <string name="perfil_cerrar">Log out</string>
+
+    <string name="reg_titulo">Register</string>
+    <string name="reg_user">Username</string>
+    <string name="reg_mail">Email</string>
+    <string name="reg_pass">Password</string>
+    <string name="reg_register">Sign Up</string>
+
+    <string name="seg_titulo">My trips</string>
+    <string name="seg_date1">September 7, 2025</string>
+    <string name="seg_meet1">9:40 am - Meet with Juan Gonzales</string>
+    <string name="seg_stay1">Accommodation at Hotel Real Plaza</string>
+    <string name="seg_date2">September 20, 2025</string>
+    <string name="seg_leave">11:30 am - Check out of Hotel Real Plaza</string>
+
+    <string name="select_donde">Where are you going?</string>
+    <string name="select_btntravel">Round trip</string>
+    <string name="select_btnstay">One way</string>
+    <string name="select_desde">From</string>
+    <string name="select_ciudad">City of origin</string>
+    <string name="select_hacia">To</string>
+    <string name="select_dest">Destination</string>
+    <string name="select_partida">Departure</string>
+    <string name="select_partidasel">Select departure date</string>
+    <string name="select_regreso">Select return date</string>
+    <string name="select_viajeros">Traveler</string>
+    <string name="select_clase">Class</string>
+    <string name="select_buscar">Search</string>
+
+    <string name="verf_titulo">Identity verification</string>
+    <string name="verf_txt">For your security, verify your identity using facial recognition</string>
+    <string name="verf_rostro">Place your face in the frame</string>
+    <string name="verf_note">Your face will not be stored, it will only be used to verify your identity</string>
+    <string name="verf_start">Start scan</string>
+</resources>

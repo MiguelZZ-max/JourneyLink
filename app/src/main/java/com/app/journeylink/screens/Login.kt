@@ -34,17 +34,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,14 +64,14 @@ fun LoginScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(navController: NavController) {
-    // Estados para los campos de texto
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+    // Estados persistentes ante recreación (cambio de idioma)
+    var username by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     // Estado para el dropdown de idioma
-    var languageExpanded by remember { mutableStateOf(false) }
-    var selectedLanguage by remember { mutableStateOf("Español") }
+    var languageExpanded by rememberSaveable { mutableStateOf(false) }
+    var selectedLanguage by rememberSaveable { mutableStateOf(LanguageUtils.getCurrentLanguageDisplayName()) }
 
     Box(
         modifier = Modifier
@@ -84,13 +84,9 @@ fun Login(navController: NavController) {
                 .padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(){
-                Text(
-                    text = " ",
-                    color = Color.White,
-                    fontSize = 30.sp
-                )
-            }
+            // Espaciador superior
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Selector de idioma
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -99,29 +95,26 @@ fun Login(navController: NavController) {
             ) {
                 // Icono de ayuda
                 IconButton(
-                    onClick = { },
+                    onClick = { /* TODO: acción de ayuda */ },
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Help,
-                        contentDescription = "Ayuda",
+                        contentDescription = stringResource(R.string.login_help),
                         tint = Color.White
                     )
                 }
+
                 // Dropdown de idioma
                 Box {
                     Button(
                         onClick = { languageExpanded = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White
-                        ),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Seleccionar idioma",
+                                contentDescription = stringResource(R.string.login_lang),
                                 tint = Color.Blue
                             )
                             Text(
@@ -129,7 +122,6 @@ fun Login(navController: NavController) {
                                 color = Color.Blue,
                                 fontSize = 14.sp
                             )
-                            
                         }
                     }
 
@@ -142,6 +134,7 @@ fun Login(navController: NavController) {
                             onClick = {
                                 selectedLanguage = "Español"
                                 languageExpanded = false
+                                LanguageUtils.setAppLanguage("es") // aplica y recrea Activity
                             }
                         )
                         DropdownMenuItem(
@@ -149,16 +142,19 @@ fun Login(navController: NavController) {
                             onClick = {
                                 selectedLanguage = "English"
                                 languageExpanded = false
+                                LanguageUtils.setAppLanguage("en")
                             }
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
             }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
             // Logo de la app
             Image(
                 painter = painterResource(id = R.drawable.door),
-                contentDescription = "App Logo",
+                contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier
                     .size(300.dp)
                     .padding(bottom = 32.dp)
@@ -166,18 +162,18 @@ fun Login(navController: NavController) {
 
             // Título
             Text(
-                text = "Inicia sesión",
+                text = stringResource(R.string.login_entrar),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 40.dp)
             )
 
-            //Campo de Usuario
+            // Campo de Usuario
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Usuario", color = Color.Blue) },
+                label = { Text(stringResource(R.string.login_user)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -195,12 +191,11 @@ fun Login(navController: NavController) {
                 singleLine = true
             )
 
-
             // Campo de contraseña
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña", color = Color.Blue) },
+                label = { Text(stringResource(R.string.login_pass)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 32.dp),
@@ -219,11 +214,15 @@ fun Login(navController: NavController) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
                 trailingIcon = {
-                    val image = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                    val image =
+                        if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = image,
-                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                            contentDescription = if (passwordVisible)
+                                stringResource(R.string.pass_hide)
+                            else
+                                stringResource(R.string.pass_show),
                             tint = Color.Blue
                         )
                     }
@@ -233,7 +232,6 @@ fun Login(navController: NavController) {
             // Botón Entrar
             Button(
                 onClick = {
-                    // Navegar a la pantalla principal
                     navController.navigate("Verify")
                 },
                 modifier = Modifier
@@ -247,7 +245,7 @@ fun Login(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Entrar",
+                    text = stringResource(R.string.login_entrar),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -255,20 +253,23 @@ fun Login(navController: NavController) {
 
             // Texto Registrarme
             TextButton(
-                onClick = {
-                    // Navegar a la pantalla de registro
-                    navController.navigate("Register")
-                },
+                onClick = { navController.navigate("Register") },
                 modifier = Modifier.padding(bottom = 40.dp)
             ) {
                 Text(
-                    text = "Registrarme",
+                    text = stringResource(R.string.login_reg),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
 
+            // (Opcional) Indicador de diagnóstico: borra cuando ya veas que cambia.
+            // Text(
+            //     text = "Lang: " + LanguageUtils.getCurrentLanguageDisplayName(),
+            //     color = Color.White,
+            //     fontSize = 12.sp
+            // )
         }
     }
 }

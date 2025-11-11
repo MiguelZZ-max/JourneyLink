@@ -1,87 +1,55 @@
-package com.app.journeylink.screens
+package com.app.journeylink
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import PagoScreen
+import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.app.journeylink.R
+import com.app.journeylink.screens.*   // importa todas tus pantallas
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainScreenPreview() {
-    JourneyLinkTheme {
-        // Funcion para solo hacer la previsualizacion
-        MainScreen(navController = rememberNavController())
-    }
-}
+class MainActivity : AppCompatActivity() {
 
-@Composable
-fun MainScreen(navController: NavController) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF87CEEB)),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "JourneyLink",
-                color = Color.White,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold
-            )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
-            Text(
-                text = " ",
-                color = Color.White,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold
-            )
+        setContent {
+            JourneyLinkTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
 
-            Image(
-                painter = painterResource(id = R.drawable.app_icon),
-                contentDescription = "App Icon",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(end = 12.dp)
-            )
-
-            Text(
-                text = "¿Por que viajar solo?",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+                    NavHost(
+                        navController = navController,
+                        startDestination = "Main"
+                    ) {
+                        composable("Main")          { MainScreen(navController = navController) }
+                        composable("Splash")        { Splash(navController = navController) }
+                        composable("Login")         { Login(navController = navController) }
+                        composable("Home")          { HomeScreen(navController = navController) }
+                        composable("Seleccion")     { SeleccionScreen(navController = navController) }
+                        composable("Companions")    { CompanionsScreen(navController = navController) }
+                        composable("CompanionInfo") { CompanionInfoScreen(navController = navController) }
+                        composable("Confirmacion")  { ConfirmScreen(navController = navController) }
+                        composable("Pago")          { PagoScreen(navController = navController) }
+                        composable("Register")      { Register(navController = navController) }
+                        composable("Seguimiento")   { MisViajesScreen(navController = navController) }
+                        composable("Verify")        { Verify(navController = navController) }
+                        composable("Historial")     { HistorialScreen(navController = navController) }
+                        composable("Perfil")        { PerfilScreen(navController = navController) }
+                    }
+                }
+            }
         }
-
-        // Botón para continuar
-        Button(
-            onClick = { navController.navigate("Splash") },
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 50.dp)
-        ) {
-            Text("Siguiente Pantalla")
-        }
-
     }
 }

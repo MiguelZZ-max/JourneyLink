@@ -1,3 +1,111 @@
 <resources>
     <string name="app_name">JourneyLink</string>
+    <string name="main_txt">¿Por que viajar solo?</string>
+    <string name="main_next">Siguiente pantalla</string>
+
+    <string name="barra_ubicacion">Ubicación</string>
+    <string name="barra_perfil">Perfil</string>
+    <string name="barra_agregar">Agregar Acompañante</string>
+
+    <string name="btn_volver">Volver</string>
+    <string name="btn_accept">Aceptar</string>
+
+    <string name="pass_hide">Ocultar constraseña</string>
+    <string name="pass_show">Mostrar constraseña</string>
+
+    <string name="compinfo_comment">Comentarios sobre el Acompañante</string>
+    <string name="compinfo_commentej">Ejemplo de comentario sobre el acompañante por parte de otro acompañante.</string>
+
+    <string name="comp_find">Encuentra Acompañantes por tu área</string>
+    <string name="comp_foto">Foto</string>
+    <string name="comp_nombre">Nombre</string>
+    <string name="comp_distancia">A 5 km de ti</string>
+
+    <string name="conf_nomviaje">Nombre del viaje</string>
+    <string name="conf_fecha">Fecha</string>
+    <string name="conf_nombre">Nombre</string>
+    <string name="conf_origen">Origen</string>
+    <string name="conf_destino">Destino</string>
+    <string name="conf_salida">Salida</string>
+    <string name="conf_llegada">Llegada</string>
+    <string name="conf_linea">Aerolínea</string>
+    <string name="conf_duracion">Duracion</string>
+    <string name="conf_acomp">Acompañante</string>
+    <string name="conf_nomacomp">Nombre del acompañante</string>
+    <string name="conf_total">Total a Pagar:</string>
+    <string name="conf_confirmar">Confirmar Pago</string>
+
+    <string name="hist_filtrar">Filtrar viajes:</string>
+    <string name="hist_buscar">Buscar</string>
+    <string name="hist_filtrardesc">Desplegar filtros</string>
+    <string name="hist_viajes">Todos los viajes</string>
+    <string name="hist_viajesact">Viajes actuales</string>
+    <string name="hist_viajesant">Viajes anteriores</string>
+    <string name="hist_viajeslista">Viajes</string>
+    <string name="hist_seg">Seguir Viaje</string>
+
+    <string name="home_central">Central Camionera de AGS</string>
+    <string name="home_donde">¿A dónde y por dónde?</string>
+    <string name="home_next">Siguiente</string>
+
+    <string name="login_inicia">Inicia sesión</string>
+    <string name="login_user">Usuario</string>
+    <string name="login_pass">Contraseña</string>
+    <string name="login_entrar">Entrar</string>
+    <string name="login_reg">Registrarme</string>
+    <string name="login_help">Ayuda</string>
+    <string name="login_lang">Seleccionar idioma</string>
+
+    <string name="pago_titulo">Pago de Viaje</string>
+    <string name="pago_tarjeta">Selecciona tu tarjeta</string>
+    <string name="pago_tarjetasel">Seleccionar tarjeta</string>
+    <string name="pago_tarjetanum">No. Tarjeta</string>
+    <string name="pago_tarjetanom">Nombre Titular</string>
+    <string name="pago_mes">Mes</string>
+    <string name="pago_ano">Año</string>
+    <string name="pago_boton">Pagar</string>
+
+    <string name="perfil_age">Miembro desde 2024</string>
+    <string name="perfil_calf">¡Calificanos!</string>
+    <string name="perfil_resena">Dejar reseña en Play Store</string>
+    <string name="perfil_historial">Historial de viajes</string>
+    <string name="perfil_ver">Ver mis viajes</string>
+    <string name="perfil_config">Configuración</string>
+    <string name="perfil_notf">Notificaciones</string>
+    <string name="perfil_temaclaro">Cambiar a tema claro</string>
+    <string name="perfil_temaoscuro">Cambiar a tema oscuro</string>
+    <string name="perfil_cerrar">Cerrar sesión</string>
+
+    <string name="reg_titulo">Registro</string>
+    <string name="reg_user">Usuario</string>
+    <string name="reg_mail">Correo</string>
+    <string name="reg_pass">Contraseña</string>
+    <string name="reg_register">Registrarme</string>
+
+    <string name="seg_titulo">Mis viajes</string>
+    <string name="seg_date1">7 de Septiembre de 2025</string>
+    <string name="seg_meet1">9:40 am - Encontrarte con Juan Gonzales</string>
+    <string name="seg_stay1">Hospedaje Hotel Real Plaza</string>
+    <string name="seg_date2">20 de Septiembre de 2025</string>
+    <string name="seg_leave">11:30 am - Desalojar Hotel Real Plaza</string>
+
+    <string name="select_donde">¿A dónde vas?</string>
+    <string name="select_btntravel">Ida y vuelta</string>
+    <string name="select_btnstay">Solo ida</string>
+    <string name="select_desde">Desde</string>
+    <string name="select_ciudad">Ciudad de origen</string>
+    <string name="select_hacia">Hacia</string>
+    <string name="select_dest">Destino</string>
+    <string name="select_partida">Partida</string>
+    <string name="select_partidasel">Selecciona la fecha de partida</string>
+    <string name="select_regreso">Selecciona la fecha de regreso</string>
+    <string name="select_viajeros">Viajero</string>
+    <string name="select_clase">Clase</string>
+    <string name="select_buscar">Buscar</string>
+
+    <string name="verf_titulo">Verificación de identidad</string>
+    <string name="verf_txt">Por su seguridad, verifque su identidad usando reconocimiento facial</string>
+    <string name="verf_rostro">Coloque su rostro en el marco</string>
+    <string name="verf_note">Su rostro no se almacenara, solo sera usado para verificar su identidad</string>
+    <string name="verf_start">Iniciar escaneo</string>
 </resources>

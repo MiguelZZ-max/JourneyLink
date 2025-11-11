@@ -14,12 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 // Data class para representar un viaje
@@ -97,7 +99,7 @@ fun HistorialScreen(
 
         // Sección de Viajes Actuales
         Text(
-            text = "Viajes Actuales",
+            text = stringResource(R.string.hist_filtrar),
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
@@ -120,7 +122,7 @@ fun HistorialScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar",
+                    contentDescription = stringResource(R.string.hist_buscar),
                     tint = Color.Gray,
                     modifier = Modifier.padding(end = 12.dp)
                 )
@@ -142,7 +144,7 @@ fun HistorialScreen(
                         ) {
                             if (searchText.isEmpty()) {
                                 Text(
-                                    text = "Buscar",
+                                    text = stringResource(R.string.hist_buscar),
                                     color = Color.Gray,
                                     fontSize = 16.sp
                                 )
@@ -154,7 +156,7 @@ fun HistorialScreen(
             }
         }
 
-        // Filtro con DropdownMenu (similar al de idioma)
+        // Filtro con DropdownMenu
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -166,7 +168,7 @@ fun HistorialScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Filtrar viajes:",
+                    text = stringResource(R.string.hist_filtrar),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black,
@@ -189,7 +191,7 @@ fun HistorialScreen(
                         trailingIcon = {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Desplegar filtros"
+                                contentDescription = stringResource(R.string.hist_filtrardesc)
                             )
                         },
                     )
@@ -199,21 +201,21 @@ fun HistorialScreen(
                         onDismissRequest = { filtroExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Todos los viajes") },
+                            text = { stringResource(R.string.hist_viajes) },
                             onClick = {
                                 filtroSeleccionado = "Todos los viajes"
                                 filtroExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Viajes actuales") },
+                            text = { stringResource(R.string.hist_viajesact)},
                             onClick = {
                                 filtroSeleccionado = "Viajes actuales"
                                 filtroExpanded = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Viajes anteriores") },
+                            text = { stringResource(R.string.hist_viajesant) },
                             onClick = {
                                 filtroSeleccionado = "Viajes anteriores"
                                 filtroExpanded = false
@@ -307,7 +309,7 @@ fun ViajeItem(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Seguir Viaje",
+                    text = stringResource(R.string.hist_seg),
                     fontSize = 14.sp
                 )
             }

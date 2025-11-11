@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +59,7 @@ fun ConfirmScreen(
         OutlinedTextField(
             value = viajeData.nombreViaje,
             onValueChange = { },
-            label = { Text("Nombre del viaje") },
+            label = { Text(stringResource(R.string.conf_nomviaje)) },
             readOnly = true,
             modifier = Modifier.fillMaxWidth() .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
@@ -73,7 +74,7 @@ fun ConfirmScreen(
         OutlinedTextField(
             value = viajeData.fecha,
             onValueChange = { },
-            label = { Text("Fecha") },
+            label = { Text(stringResource(R.string.conf_fecha))},
             readOnly = true,
             modifier = Modifier.fillMaxWidth() .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
@@ -92,7 +93,7 @@ fun ConfirmScreen(
             OutlinedTextField(
                 value = viajeData.origen,
                 onValueChange = { },
-                label = { Text("Origen") },
+                label = { Text(stringResource(R.string.conf_origen)) },
                 readOnly = true,
                 modifier = Modifier.weight(1f) .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -104,7 +105,7 @@ fun ConfirmScreen(
             OutlinedTextField(
                 value = viajeData.destino,
                 onValueChange = { },
-                label = { Text("Destino") },
+                label = { Text(stringResource(R.string.conf_destino)) },
                 readOnly = true,
                 modifier = Modifier.weight(1f) .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -124,7 +125,7 @@ fun ConfirmScreen(
             OutlinedTextField(
                 value = viajeData.horaSalida,
                 onValueChange = { },
-                label = { Text("Salida") },
+                label = { Text(stringResource(R.string.conf_salida)) },
                 readOnly = true,
                 modifier = Modifier.weight(1f) .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -136,7 +137,7 @@ fun ConfirmScreen(
             OutlinedTextField(
                 value = viajeData.horaLlegada,
                 onValueChange = { },
-                label = { Text("Llegada") },
+                label = { Text(stringResource(R.string.conf_llegada)) },
                 readOnly = true,
                 modifier = Modifier.weight(1f) .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -157,7 +158,7 @@ fun ConfirmScreen(
                 value = viajeData.aerolinea,
                 onValueChange = { },
                 modifier = Modifier.background(Color.White),
-                label = { Text("Aerolínea") },
+                label = { Text(stringResource(R.string.conf_linea)) },
                 readOnly = true,
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 20.sp,
@@ -168,7 +169,7 @@ fun ConfirmScreen(
             OutlinedTextField(
                 value = viajeData.duracion,
                 onValueChange = { },
-                label = { Text("Duración") },
+                label = { Text(stringResource(R.string.conf_duracion) )},
                 readOnly = true,
                 modifier = Modifier.background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -182,7 +183,7 @@ fun ConfirmScreen(
 
         // Acompañante
         Text(
-            text = "Acompañante",
+            text = stringResource(R.string.conf_acomp),
             fontSize = 20.sp,
             color = Color.Black,
             modifier = Modifier.align(Alignment.Start),
@@ -193,7 +194,7 @@ fun ConfirmScreen(
         OutlinedTextField(
             value = viajeData.acompanante,
             onValueChange = { },
-            label = { Text("Nombre del acompañante") },
+            label = { Text(stringResource(R.string.conf_nomacomp)) },
             readOnly = true,
             modifier = Modifier.fillMaxWidth() .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
@@ -203,43 +204,6 @@ fun ConfirmScreen(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-
-        // Spinner de relación
-        ExposedDropdownMenuBox(
-            expanded = false,
-            onExpandedChange = { }
-        ) {
-            OutlinedTextField(
-                value = relacionSeleccionada,
-                onValueChange = { },
-                label = { Text("Relación") },
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-                    .background(Color.White),
-                textStyle = LocalTextStyle.current.copy(
-                    fontSize = 20.sp,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
-            )
-
-            ExposedDropdownMenu(
-                expanded = false,
-                onDismissRequest = { }
-            ) {
-                viajeData.opcionesRelacion.forEach { opcion ->
-                    DropdownMenuItem(
-                        text = { Text(opcion) },
-                        onClick = {
-                            relacionSeleccionada = opcion
-                        }
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -259,7 +223,7 @@ fun ConfirmScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "Total a Pagar:",
+                        text = stringResource(R.string.conf_total),
                         fontSize = 20.sp,
                         color = Color.Black,
                         fontWeight = FontWeight.Bold
@@ -298,7 +262,7 @@ fun ConfirmScreen(
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Confirmar/Pagar",
+                        text = stringResource(R.string.conf_confirmar),
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )

@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 
 @Composable
 fun CompanionInfoScreen(navController: NavController) {
@@ -106,7 +108,7 @@ fun CompanionInfoScreen(navController: NavController) {
                         .padding(horizontal = 16.dp, vertical = 18.dp)
                 ) {
                     Text(
-                        text = "Comentarios sobre el Acompañante",
+                        text = stringResource(R.string.compinfo_comment),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -119,7 +121,7 @@ fun CompanionInfoScreen(navController: NavController) {
                     // Comentarios
                     CommentRow(
                         name = "Chespirito",
-                        comment = "Ejemplo de comentario sobre el acompañante por parte de otro acompañante.",
+                        comment = stringResource(R.string.compinfo_commentej),
                         likes = "2.5k"
                     )
 
@@ -127,7 +129,7 @@ fun CompanionInfoScreen(navController: NavController) {
 
                     CommentRow(
                         name = "Chespirito",
-                        comment = "Ejemplo de comentario sobre el acompañante por parte de otro acompañante.",
+                        comment = stringResource(R.string.compinfo_commentej),
                         likes = "2.5k"
                     )
                 }

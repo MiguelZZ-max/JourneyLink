@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -80,7 +82,7 @@ fun PerfilScreen(
                 )
 
                 Text(
-                    text = "Miembro desde 2024",
+                    text = stringResource(R.string.perfil_age),
                     fontSize = 14.sp,
                     color = textColor.copy(alpha = 0.7f)
                 )
@@ -98,7 +100,7 @@ fun PerfilScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "¡Calificanos!",
+                    text = stringResource(R.string.perfil_calf),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = textColor,
@@ -112,7 +114,7 @@ fun PerfilScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Dejar reseña en Play Store")
+                    Text(stringResource(R.string.perfil_resena))
                 }
             }
         }
@@ -128,7 +130,7 @@ fun PerfilScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Historial de viajes",
+                    text = stringResource(R.string.perfil_historial),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = textColor,
@@ -145,7 +147,7 @@ fun PerfilScreen(
                         .padding(bottom = 12.dp)
                 ) {
                     Text(
-                        "Ver mis viajes",
+                        stringResource(R.string.perfil_ver),
                         color = textColor
                     )
                 }
@@ -158,16 +160,6 @@ fun PerfilScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        "Idioma",
-                        fontSize = 16.sp,
-                        color = textColor
-                    )
-                    Text(
-                        "Español",
-                        fontSize = 16.sp,
-                        color = textColor.copy(alpha = 0.7f)
-                    )
                 }
             }
         }
@@ -181,7 +173,7 @@ fun PerfilScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Configuración",
+                    text = stringResource(R.string.perfil_config),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = textColor,
@@ -192,7 +184,7 @@ fun PerfilScreen(
                 ListItem(
                     headlineContent = {
                         Text(
-                            "Notificaciones",
+                            stringResource(R.string.perfil_notf),
                             color = textColor
                         )
                     },
@@ -210,7 +202,7 @@ fun PerfilScreen(
                 ListItem(
                     headlineContent = {
                         Text(
-                            if (isDarkTheme) "Cambiar a tema claro" else "Cambiar a tema oscuro",
+                            if (isDarkTheme) stringResource(R.string.perfil_temaclaro) else stringResource(R.string.perfil_temaoscuro),
                             color = textColor
                         )
                     },
@@ -245,7 +237,7 @@ fun PerfilScreen(
                 containerColor = Color.Magenta
             )
         ) {
-            Text("Cerrar sesión")
+            Text(stringResource(R.string.perfil_cerrar))
         }
     }
 }

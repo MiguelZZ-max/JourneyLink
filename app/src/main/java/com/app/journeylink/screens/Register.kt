@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -104,7 +105,7 @@ fun Register(navController: NavController) {
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Help,
-                        contentDescription = "Ayuda",
+                        contentDescription = stringResource(R.string.login_help),
                         tint = Color.White
                     )
                 }
@@ -121,7 +122,7 @@ fun Register(navController: NavController) {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Seleccionar idioma",
+                                contentDescription = stringResource(R.string.login_lang),
                                 tint = Color.Blue
                             )
                             Text(
@@ -173,7 +174,7 @@ fun Register(navController: NavController) {
 
             // Título
             Text(
-                text = "Registro",
+                text = stringResource(R.string.reg_titulo),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -184,7 +185,7 @@ fun Register(navController: NavController) {
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Usuario", color = Color.Blue) },
+                label = { Text(stringResource(R.string.reg_user)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -206,7 +207,7 @@ fun Register(navController: NavController) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Correo", color = Color.Blue) },
+                label = { Text(stringResource(R.string.reg_mail)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -229,7 +230,7 @@ fun Register(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña", color = Color.Blue) },
+                label = { Text(stringResource(R.string.reg_pass)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 32.dp),
@@ -252,7 +253,7 @@ fun Register(navController: NavController) {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = image,
-                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                            contentDescription = if (passwordVisible) stringResource(R.string.pass_hide) else stringResource(R.string.pass_show),
                             tint = Color.Blue
                         )
                     }
@@ -262,8 +263,8 @@ fun Register(navController: NavController) {
             // Botón Entrar
             Button(
                 onClick = {
-                    // Navegar a la pantalla principal
-                    navController.navigate("Main")
+                    // Continuar al perfil
+                    navController.navigate("Perfil")
                 },
                 modifier = Modifier
                     .width(200.dp)
@@ -276,7 +277,7 @@ fun Register(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Registrarme",
+                    text = stringResource(R.string.reg_register),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -291,7 +292,7 @@ fun Register(navController: NavController) {
                 modifier = Modifier.padding(bottom = 40.dp)
             ) {
                 Text(
-                    text = "Volver",
+                    text = stringResource(R.string.btn_volver),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
