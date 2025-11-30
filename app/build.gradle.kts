@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -40,6 +43,13 @@ android {
 }
 
 dependencies {
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.realtime)
+    implementation(libs.firebase.config)
 
     implementation("androidx.navigation:navigation-compose:2.9.5")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
