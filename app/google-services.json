@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "127900484336",
+    "project_id": "journeylink-e4eae",
+    "storage_bucket": "journeylink-e4eae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127900484336:android:6e25ead2724db27fcdb835",
+        "android_client_info": {
+          "package_name": "com.app.journeylink"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqMsQG1564e3XJvppkucNsuABqWgrFtl0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
