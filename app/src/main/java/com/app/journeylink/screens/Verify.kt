@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -105,7 +106,7 @@ fun Verify(navController: NavController) {
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Help,
-                        contentDescription = "Ayuda",
+                        contentDescription = stringResource(R.string.login_help),
                         tint = Color.White
                     )
                 }
@@ -122,7 +123,7 @@ fun Verify(navController: NavController) {
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Seleccionar idioma",
+                                contentDescription = stringResource(R.string.login_lang),
                                 tint = Color.Blue
                             )
                             Text(
@@ -166,7 +167,7 @@ fun Verify(navController: NavController) {
 
             // Título
             Text(
-                text = "Verificación de identidad",
+                text = stringResource(R.string.verf_titulo),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -174,7 +175,7 @@ fun Verify(navController: NavController) {
             )
             // Descripcion
             Text(
-                text = "Por su seguridad, verifque su identidad usando reconocimiento facial",
+                text = stringResource(R.string.verf_txt),
                 color = Color.Black,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -192,7 +193,7 @@ fun Verify(navController: NavController) {
 
             // Identificacion
             Text(
-                text = "Coloque su rostro en el marco",
+                text = stringResource(R.string.verf_rostro),
                 color = Color.White,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -200,7 +201,7 @@ fun Verify(navController: NavController) {
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Su rostro no se almacenara, solo sera usado para verificar su identidad",
+                text = stringResource(R.string.verf_note),
                 color = Color.Black,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
@@ -226,7 +227,7 @@ fun Verify(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "Iniciar escaneo",
+                    text = stringResource(R.string.verf_start),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -241,7 +242,7 @@ fun Verify(navController: NavController) {
                 modifier = Modifier.padding(bottom = 40.dp)
             ) {
                 Text(
-                    text = "Volver",
+                    text = stringResource(R.string.btn_volver),
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
