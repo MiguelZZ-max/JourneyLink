@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true, showSystemUi = true, name = "Login Portrait")
 @Composable
@@ -41,16 +45,52 @@ private fun LoginPortraitPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(navController: NavController) {
-    // --- Estado persistente (se conserva tras recreación por cambio de idioma) ---
-    var username by rememberSaveable { mutableStateOf("") }
+    // --- Estado persistente ---
+    var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     var langExpanded by rememberSaveable { mutableStateOf(false) }
     var selectedLanguage by rememberSaveable { mutableStateOf(LanguageUtils.getCurrentLanguageDisplayName()) }
 
     val cfg = LocalConfiguration.current
     val isLandscape = cfg.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val auth = Firebase.auth
+    val coroutineScope = rememberCoroutineScope()
+
+    // Función para iniciar sesión
+    fun signInWithEmailAndPassword() {
+        if (email.isBlank() || password.isBlank()) {
+            errorMessage = "Por favor, completa todos los campos"
+            return
+        }
+
+        isLoading = true
+        errorMessage = null
+
+        coroutineScope.launch {
+            try {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        isLoading = false
+                        if (task.isSuccessful) {
+                            // ✅ Navegar directamente a Verify después del login exitoso
+                            navController.navigate("Verify") {
+                                // Limpiar el back stack para que no pueda volver al Login
+                                popUpTo("Login") { inclusive = true }
+                            }
+                        } else {
+                            errorMessage = task.exception?.message ?: "Error al iniciar sesión"
+                        }
+                    }
+            } catch (e: Exception) {
+                isLoading = false
+                errorMessage = e.message ?: "Error desconocido"
+            }
+        }
+    }
 
     // --- Widgets reutilizables ---
     @Composable
@@ -102,9 +142,25 @@ fun Login(navController: NavController) {
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Mostrar mensaje de error si existe
+            errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                        .background(Color.Red.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                )
+            }
+
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = email,
+                onValueChange = {
+                    email = it
+                    errorMessage = null // Limpiar error cuando el usuario empiece a escribir
+                },
                 label = { Text(stringResource(R.string.login_user)) },
                 singleLine = true,
                 modifier = Modifier
@@ -120,12 +176,16 @@ fun Login(navController: NavController) {
                     cursorColor = Color.White,
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White
-                )
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
 
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    errorMessage = null // Limpiar error cuando el usuario empiece a escribir
+                },
                 label = { Text(stringResource(R.string.login_pass)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -160,7 +220,7 @@ fun Login(navController: NavController) {
             )
 
             Button(
-                onClick = { navController.navigate("Verify") },
+                onClick = { signInWithEmailAndPassword() },
                 modifier = Modifier
                     .width(200.dp)
                     .height(60.dp),
@@ -168,13 +228,21 @@ fun Login(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,
                     contentColor = Color.White
-                )
+                ),
+                enabled = !isLoading
             ) {
-                Text(
-                    text = stringResource(R.string.login_entrar),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.login_entrar),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             TextButton(
@@ -195,7 +263,7 @@ fun Login(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF87CEEB)) // azul claro
+            .background(Color(0xFF87CEEB))
             .padding(16.dp)
     ) {
         // Selector de idioma flotando arriba-derecha
@@ -231,14 +299,14 @@ fun Login(navController: NavController) {
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text = stringResource(R.string.login_entrar), // usa un único string
+                        text = stringResource(R.string.login_entrar),
                         color = Color.White,
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
 
-                // Lado derecho: formulario (ancho acotado)
+                // Lado derecho: formulario
                 FormBlock(
                     modifier = Modifier
                         .weight(1f)
