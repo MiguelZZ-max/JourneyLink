@@ -1,5 +1,10 @@
 package com.app.journeylink.screens
 
+import android.content.pm.PackageManager
+import android.Manifest
+import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -20,14 +25,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.ui.theme.JourneyLinkTheme
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -103,18 +119,99 @@ fun HomeScreen(navController: NavHostController) {
 
 /* ---------- Secciones UI ---------- */
 
+
+@SuppressLint("MissingPermission")
 @Composable
 private fun MapPlaceholder() {
-    Image(
-        painter = painterResource(id = R.drawable.mapa),
-        contentDescription = "Mapa",
-        contentScale = ContentScale.Crop,
+    val context = LocalContext.current
+
+    // Cliente de ubicación de Google
+    val fusedLocationClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+
+    // Ubicación por defecto (por si no hay permisos o no hay ubicación)
+    val defaultLatLng = LatLng(21.8818, -102.2916) // Aguascalientes
+
+    var myLocation by remember { mutableStateOf<LatLng?>(null) }
+
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(defaultLatLng, 13f)
+    }
+
+    val hasFineLocationPermission =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+    val hasCoarseLocationPermission =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+    // Lanzador para pedir permisos en tiempo de ejecución
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        if (granted) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val latLng = LatLng(it.latitude, it.longitude)
+                    myLocation = latLng
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(latLng, 15f)
+                }
+            }
+        }
+    }
+
+    // Pedir permisos / obtener ubicación
+    LaunchedEffect(Unit) {
+        if (!hasFineLocationPermission && !hasCoarseLocationPermission) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        } else {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val latLng = LatLng(it.latitude, it.longitude)
+                    myLocation = latLng
+                    cameraPositionState.position =
+                        CameraPosition.fromLatLngZoom(latLng, 15f)
+                }
+            }
+        }
+    }
+
+    val mapProperties = MapProperties(
+        isMyLocationEnabled = hasFineLocationPermission || hasCoarseLocationPermission
+    )
+
+    GoogleMap(
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp)
-            .clip(RoundedCornerShape(12.dp))
-    )
+            .clip(RoundedCornerShape(12.dp)),
+        cameraPositionState = cameraPositionState,
+        properties = mapProperties
+    ) {
+        myLocation?.let { latLng ->
+            Marker(
+                state = rememberMarkerState(position = latLng),
+                title = "Tu ubicación"
+            )
+        }
+    }
 }
+
 
 
 @Composable
