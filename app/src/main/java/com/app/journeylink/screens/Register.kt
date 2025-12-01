@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @Preview(showBackground = true, showSystemUi = true, name = "Register Portrait")
 @Composable
@@ -46,12 +52,71 @@ fun Register(navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
     var langExpanded by rememberSaveable { mutableStateOf(false) }
     var selectedLanguage by rememberSaveable { mutableStateOf(LanguageUtils.getCurrentLanguageDisplayName()) }
 
     val cfg = LocalConfiguration.current
     val isLandscape = cfg.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val auth = Firebase.auth
+    val firestore = Firebase.firestore
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    // Función para registrar usuario
+    fun registerUser() {
+        if (username.isBlank() || email.isBlank() || password.isBlank()) {
+            errorMessage = "Por favor, completa todos los campos"
+            return
+        }
+
+        if (password.length < 6) {
+            errorMessage = "La contraseña debe tener al menos 6 caracteres"
+            return
+        }
+
+        isLoading = true
+        errorMessage = null
+
+        coroutineScope.launch {
+            try {
+                // 1. Crear usuario en Firebase Authentication
+                val authResult = auth.createUserWithEmailAndPassword(email, password).await()
+
+                // 2. Crear documento en Firestore con solo los campos requeridos
+                val user = authResult.user
+                if (user != null) {
+                    val userData = hashMapOf(
+                        "email" to email,
+                        "name" to username,
+                        "rating" to 0.0
+                    )
+
+                    firestore.collection("usuario")
+                        .document(user.uid) // Usar el UID de Auth como ID del documento
+                        .set(userData)
+                        .await()
+
+                    // 3. Navegar a la siguiente pantalla después del registro exitoso
+                    navController.navigate("Perfil") {
+                        popUpTo("Register") { inclusive = true }
+                    }
+                }
+            } catch (e: Exception) {
+                errorMessage = when {
+                    e.message?.contains("email address is already") == true ->
+                        "Este correo electrónico ya está registrado"
+                    e.message?.contains("badly formatted") == true ->
+                        "Formato de correo electrónico inválido"
+                    else -> e.message ?: "Error al registrar usuario"
+                }
+            } finally {
+                isLoading = false
+            }
+        }
+    }
 
     // --- Componentes reutilizables ---
     @Composable
@@ -103,10 +168,26 @@ fun Register(navController: NavController) {
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Mostrar mensaje de error
+            errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                        .background(Color.Red.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                )
+            }
+
             // Usuario
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = {
+                    username = it
+                    errorMessage = null // Limpiar error al escribir
+                },
                 label = { Text(stringResource(R.string.reg_user)) },
                 singleLine = true,
                 modifier = Modifier
@@ -127,7 +208,10 @@ fun Register(navController: NavController) {
             // Email
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = {
+                    email = it
+                    errorMessage = null // Limpiar error al escribir
+                },
                 label = { Text(stringResource(R.string.reg_mail)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -149,7 +233,10 @@ fun Register(navController: NavController) {
             // Password
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {
+                    password = it
+                    errorMessage = null // Limpiar error al escribir
+                },
                 label = { Text(stringResource(R.string.reg_pass)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -185,7 +272,7 @@ fun Register(navController: NavController) {
 
             // Botón registrar
             Button(
-                onClick = { navController.navigate("Perfil") },
+                onClick = { registerUser() },
                 modifier = Modifier
                     .width(200.dp)
                     .height(60.dp),
@@ -193,19 +280,32 @@ fun Register(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Blue,
                     contentColor = Color.White
-                )
+                ),
+                enabled = !isLoading
             ) {
-                Text(
-                    text = stringResource(R.string.reg_register),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.reg_register),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             // Volver
             TextButton(
-                onClick = { navController.navigate("Login") },
-                modifier = Modifier.padding(top = 16.dp)
+                onClick = {
+                    if (!isLoading) {
+                        navController.navigate("Login")
+                    }
+                },
+                modifier = Modifier.padding(top = 16.dp),
+                enabled = !isLoading
             ) {
                 Text(
                     text = stringResource(R.string.btn_volver),
