@@ -1,6 +1,6 @@
 package com.app.journeylink
 
-import PagoScreen
+import com.app.journeylink.screens.PagoScreen
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
