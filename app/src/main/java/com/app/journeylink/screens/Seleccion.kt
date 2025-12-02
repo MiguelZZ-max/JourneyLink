@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.app.journeylink.R
+import com.google.firebase.firestore.FirebaseFirestore
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -44,15 +45,21 @@ fun SeleccionScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    // Leemos lo que mandó HomeScreen
+    val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+    val initialFrom = savedStateHandle?.get<String>("fromText") ?: ""
+    val initialTo = savedStateHandle?.get<String>("toText") ?: ""
+
     // --------- STATE ---------
     var roundTrip by remember { mutableStateOf(true) }
 
-    var from by remember { mutableStateOf("") }
-    var to by remember { mutableStateOf("") }
+    var from by remember { mutableStateOf(initialFrom) }
+    var to by remember { mutableStateOf(initialTo) }
 
     // Fechas
     val tz = remember { ZoneId.systemDefault() }
     val fmt = remember { DateTimeFormatter.ofPattern("d MMM yyyy") }
+    val isoFmt = remember { DateTimeFormatter.ISO_LOCAL_DATE }
 
     var departDate by remember {
         mutableStateOf(LocalDate.now(tz).plusDays(20)) // ej. 5 Ene 2025 aprox
@@ -73,6 +80,9 @@ fun SeleccionScreen(
 
     var travelersExpanded by remember { mutableStateOf(false) }
     var classExpanded by remember { mutableStateOf(false) }
+
+    // Firestore
+    val db = remember { FirebaseFirestore.getInstance() }
 
     // Colores corregidos
     val fondo = Color(0x0AE0E0E0)  // Fondo gris claro para toda la pantalla
@@ -208,7 +218,10 @@ fun SeleccionScreen(
                                 readOnly = true,
                                 trailingIcon = {
                                     IconButton(onClick = { showDepartPicker = true }) {
-                                        Icon(Icons.Filled.DateRange, contentDescription = stringResource(R.string.conf_fecha))
+                                        Icon(
+                                            Icons.Filled.DateRange,
+                                            contentDescription = stringResource(R.string.conf_fecha)
+                                        )
                                     }
                                 }
                             )
@@ -350,6 +363,22 @@ fun SeleccionScreen(
             // Botón Buscar
             Button(
                 onClick = {
+                    // Datos que se guardan en Firestore
+                    val viaje = hashMapOf(
+                        "origen" to from,
+                        "destino" to to,
+                        "fechaPartida" to departDate.format(isoFmt),
+                        "fechaRegreso" to if (roundTrip) returnDate.format(isoFmt) else "",
+                        "empresa" to "AeroMexico",
+                        "transporte" to "avion",
+                        "precio" to "30500",       // precio fijo por ahora
+                        "estado" to "pendiente"
+                    )
+
+                    db.collection("Viajes")
+                        .document("viaje")
+                        .set(viaje)
+
                     navController.navigate("Confirmacion")
                 },
                 modifier = Modifier

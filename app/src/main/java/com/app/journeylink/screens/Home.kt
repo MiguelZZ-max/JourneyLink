@@ -52,10 +52,15 @@ fun HomePreview() {
         HomeScreen(navController = rememberNavController())
     }
 }
+
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val fondo = Color(0xFFE9EDF1)
     val azulTarjeta = Color(0xFF9FD6FF)
+
+    // Estado para origen (coordenadas) y destino (texto)
+    var originLatLng by remember { mutableStateOf<LatLng?>(null) }
+    var destination by remember { mutableStateOf("") }
 
     Scaffold(
         containerColor = fondo,
@@ -74,7 +79,12 @@ fun HomeScreen(navController: NavHostController) {
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            MapPlaceholder()
+            // Pasamos callback para guardar la ubicación actual
+            MapPlaceholder(
+                onLocationReady = { lat ->
+                    originLatLng = lat
+                }
+            )
 
             Card(
                 colors = CardDefaults.cardColors(containerColor = azulTarjeta),
@@ -91,21 +101,42 @@ fun HomeScreen(navController: NavHostController) {
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     TypeSelector()
-                    SearchBox()
+
+                    // Buscador controlado
+                    SearchBox(
+                        query = destination,
+                        onQueryChange = { destination = it }
+                    )
+
+                    // Lista de destinos que rellenan el destino al tocarse
                     DestinationList(
-                        listOf(
+                        items = listOf(
                             "Velaria Mall",
                             "Isla San Marcos",
                             stringResource(R.string.home_central),
                             "Altaria Mall"
-                        )
+                        ),
+                        onItemClick = { destination = it }
                     )
                 }
             }
 
             // Botón "Siguiente"
             Button(
-                onClick = { navController.navigate("Seleccion") },
+                onClick = {
+                    // Guardamos datos para la pantalla Seleccion
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.apply {
+                            set("fromText", "Mi ubicación actual")
+                            originLatLng?.let {
+                                set("originLat", it.latitude)
+                                set("originLng", it.longitude)
+                            }
+                            set("toText", destination)
+                        }
+                    navController.navigate("Seleccion")
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(contentColor = azulTarjeta)
             ) {
@@ -122,7 +153,9 @@ fun HomeScreen(navController: NavHostController) {
 
 @SuppressLint("MissingPermission")
 @Composable
-private fun MapPlaceholder() {
+private fun MapPlaceholder(
+    onLocationReady: (LatLng) -> Unit = {}   // callback opcional
+) {
     val context = LocalContext.current
 
     // Cliente de ubicación de Google
@@ -165,6 +198,7 @@ private fun MapPlaceholder() {
                     myLocation = latLng
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(latLng, 15f)
+                    onLocationReady(latLng)
                 }
             }
         }
@@ -186,6 +220,7 @@ private fun MapPlaceholder() {
                     myLocation = latLng
                     cameraPositionState.position =
                         CameraPosition.fromLatLngZoom(latLng, 15f)
+                    onLocationReady(latLng)
                 }
             }
         }
@@ -251,11 +286,13 @@ private fun TypeSelector() {
 
 
 @Composable
-private fun SearchBox() {
-    var query by remember { mutableStateOf("") }
+private fun SearchBox(
+    query: String,
+    onQueryChange: (String) -> Unit
+) {
     TextField(
         value = query,
-        onValueChange = { query = it },
+        onValueChange = onQueryChange,
         leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         placeholder = {
             Text(stringResource(R.string.home_donde), maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -275,19 +312,25 @@ private fun SearchBox() {
 
 
 @Composable
-private fun DestinationList(items: List<String>) {
+private fun DestinationList(
+    items: List<String>,
+    onItemClick: (String) -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        items.forEach { DestinationRow(it) }
+        items.forEach { DestinationRow(it, onItemClick) }
     }
 }
 
 @Composable
-private fun DestinationRow(text: String) {
+private fun DestinationRow(
+    text: String,
+    onItemClick: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable { /* TODO: navegar al detalle */ }
+            .clickable { onItemClick(text) }
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
