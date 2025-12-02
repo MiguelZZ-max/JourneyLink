@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -20,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavController
 import com.app.journeylink.R
 import com.app.journeylink.ui.theme.JourneyLinkTheme
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -36,7 +38,49 @@ fun ConfirmScreen(
     viajeData: ViajeData = ViajeData(),
     navController: NavController // Datos por defecto
 ) {
-    var relacionSeleccionada by remember { mutableStateOf(viajeData.opcionesRelacion[0]) }
+    // Estado local con los datos del viaje
+    var viajeState by remember { mutableStateOf(viajeData) }
+    var relacionSeleccionada by remember { mutableStateOf(viajeState.opcionesRelacion[0]) }
+
+    val isPreview = LocalInspectionMode.current
+    val db = remember { FirebaseFirestore.getInstance() }
+
+    // Leemos Firestore solo cuando no es preview
+    LaunchedEffect(isPreview) {
+        if (!isPreview) {
+            db.collection("Viajes")
+                .document("viaje")
+                .get()
+                .addOnSuccessListener { doc ->
+                    if (doc != null && doc.exists()) {
+                        val origen = doc.getString("origen") ?: viajeState.origen
+                        val destino = doc.getString("destino") ?: viajeState.destino
+                        val empresa = doc.getString("empresa") ?: viajeState.aerolinea
+                        val precio = doc.getString("precio") ?: viajeState.total
+                        val fechaPartida = doc.getString("fechaPartida")
+                        val fechaRegreso = doc.getString("fechaRegreso")
+
+                        val fechaDisplay =
+                            if (!fechaPartida.isNullOrEmpty() && !fechaRegreso.isNullOrEmpty()) {
+                                "$fechaPartida - $fechaRegreso"
+                            } else {
+                                viajeState.fecha
+                            }
+
+                        val nombreViaje = "Viaje a $destino"
+
+                        viajeState = viajeState.copy(
+                            origen = origen,
+                            destino = destino,
+                            aerolinea = empresa,
+                            total = precio,
+                            fecha = fechaDisplay,
+                            nombreViaje = nombreViaje
+                        )
+                    }
+                }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -57,11 +101,13 @@ fun ConfirmScreen(
 
         // Título del viaje
         OutlinedTextField(
-            value = viajeData.nombreViaje,
+            value = viajeState.nombreViaje,
             onValueChange = { },
             label = { Text(stringResource(R.string.conf_nomviaje)) },
             readOnly = true,
-            modifier = Modifier.fillMaxWidth() .background(Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 24.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -72,11 +118,13 @@ fun ConfirmScreen(
 
         // Fecha
         OutlinedTextField(
-            value = viajeData.fecha,
+            value = viajeState.fecha,
             onValueChange = { },
-            label = { Text(stringResource(R.string.conf_fecha))},
+            label = { Text(stringResource(R.string.conf_fecha)) },
             readOnly = true,
-            modifier = Modifier.fillMaxWidth() .background(Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 24.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -91,11 +139,13 @@ fun ConfirmScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = viajeData.origen,
+                value = viajeState.origen,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.conf_origen)) },
                 readOnly = true,
-                modifier = Modifier.weight(1f) .background(Color.White),
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 20.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -103,11 +153,13 @@ fun ConfirmScreen(
             )
 
             OutlinedTextField(
-                value = viajeData.destino,
+                value = viajeState.destino,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.conf_destino)) },
                 readOnly = true,
-                modifier = Modifier.weight(1f) .background(Color.White),
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 20.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -123,11 +175,13 @@ fun ConfirmScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             OutlinedTextField(
-                value = viajeData.horaSalida,
+                value = viajeState.horaSalida,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.conf_salida)) },
                 readOnly = true,
-                modifier = Modifier.weight(1f) .background(Color.White),
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 20.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -135,11 +189,13 @@ fun ConfirmScreen(
             )
 
             OutlinedTextField(
-                value = viajeData.horaLlegada,
+                value = viajeState.horaLlegada,
                 onValueChange = { },
                 label = { Text(stringResource(R.string.conf_llegada)) },
                 readOnly = true,
-                modifier = Modifier.weight(1f) .background(Color.White),
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
                     fontSize = 20.sp,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -155,7 +211,7 @@ fun ConfirmScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             OutlinedTextField(
-                value = viajeData.aerolinea,
+                value = viajeState.aerolinea,
                 onValueChange = { },
                 modifier = Modifier.background(Color.White),
                 label = { Text(stringResource(R.string.conf_linea)) },
@@ -167,9 +223,9 @@ fun ConfirmScreen(
             )
 
             OutlinedTextField(
-                value = viajeData.duracion,
+                value = viajeState.duracion,
                 onValueChange = { },
-                label = { Text(stringResource(R.string.conf_duracion) )},
+                label = { Text(stringResource(R.string.conf_duracion)) },
                 readOnly = true,
                 modifier = Modifier.background(Color.White),
                 textStyle = LocalTextStyle.current.copy(
@@ -192,11 +248,13 @@ fun ConfirmScreen(
         Spacer(modifier = Modifier.height(4.dp))
 
         OutlinedTextField(
-            value = viajeData.acompanante,
+            value = viajeState.acompanante,
             onValueChange = { },
             label = { Text(stringResource(R.string.conf_nomacomp)) },
             readOnly = true,
-            modifier = Modifier.fillMaxWidth() .background(Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 20.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -233,11 +291,13 @@ fun ConfirmScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     OutlinedTextField(
-                        value = "$${viajeData.total} MXN",
+                        value = "$${viajeState.total} MXN",
                         onValueChange = { },
                         label = { Text("Total") },
                         readOnly = true,
-                        modifier = Modifier.fillMaxWidth() .background(Color.White),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
                         textStyle = LocalTextStyle.current.copy(
                             fontSize = 15.sp,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
@@ -252,10 +312,10 @@ fun ConfirmScreen(
                 // Botón de confirmar/pagar
                 Button(
                     onClick = {
-                        onConfirmarPagar ()
+                        onConfirmarPagar()
                         navController.navigate("Pago")
 
-                              },
+                    },
                     modifier = Modifier
                         .height(56.dp)
                         .width(150.dp),
