@@ -18,6 +18,8 @@ import com.app.journeylink.ui.theme.JourneyLinkTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 class MainActivity : AppCompatActivity() {
 
@@ -115,13 +117,30 @@ fun AppNavigation() {
             }
         }
 
-        composable("CompanionInfo") {
+        composable(
+            route = "CompanionInfo/{name}/{rating}", // 1. Definimos la URL dinámica
+            arguments = listOf(
+                navArgument("name") { type = NavType.StringType },
+                navArgument("rating") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
             if (currentUser != null) {
-                CompanionInfoScreen(navController = navController)
+                // 2. Extraemos los datos del "sobre" (backStackEntry)
+                val argName = backStackEntry.arguments?.getString("name")
+                val argRating = backStackEntry.arguments?.getInt("rating")
+
+                // 3. Se los pasamos a la pantalla
+                CompanionInfoScreen(
+                    navController = navController,
+                    userName = argName,
+                    userRating = argRating
+                )
             } else {
+                // Tu lógica de seguridad intacta
                 LaunchedEffect(Unit) {
                     navController.navigate("Login") {
-                        popUpTo("CompanionInfo") { inclusive = true }
+                        // Aseguramos limpiar la pila correctamente
+                        popUpTo("CompanionInfo/{name}/{rating}") { inclusive = true }
                     }
                 }
             }
